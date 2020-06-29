@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Vue Blokus (kinda)</title>
+		<meta charset="UTF-8">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<style>
+            .main-grid{
+                display: grid;
+                grid-template-columns: 600px auto;
+                column-gap: 20px;
+            }
+            .blokus-grid {
+                display: grid;
+                
+                grid-template-columns: 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px;
+                grid-template-rows: 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px;
+            }
+            .space {
+                border: solid;
+            }
+		</style>
+	</head>
+	<body>
+	<div id="app">
+        <div :class="maingrid" >
+            <section :class="blokusgrid">
+                <div
+                :class="space"
+                :key="square.id"
+                v-for="(square,index) in grid"
+                :style="square.clicked ? style : {background: square.color}"
+                @click="()=>onClick(index)"              
+                >{{square.text}}</div>
+            </section>
+            <span><h2>BlokusLike</h2><h3>Rules</h3>
+                <p>Blokus is a grid based strategy game for 2-4 players.The game starts with <span style="color: blue;">Player One</span>, they are given a random shape which they could place anywhere inside the grid: to place pieces inside the Grid, click the chosen spaces on the grid to match the shape.</br>
+                Once that's done, click the next player button; in this case <span style="color: red;">"PlayerTwo"</span>. Once that button is clicked <span style="color: red;">Player Two</span> will be assigned a shape to place on the grid. They have to place the piece connected to the corner of a previous piece.</br>
+                </p>
+                <img src="images/Example.png" style="width:100px; height: 100px">
+                <p>Then repeat these steps for <span style="color: goldenrod;">Player Three</span> and <span style="color: green;">Player Four</span> for the corresponding number of players.</br> To erase pieces in the case of a mistake, just click on the mistaken space again.</br>Assigned Pieces can be rotated and/or flipped when placed on the board.</p>
+                <img src="images/Example2.png" style="width:100px; height: 100px">
+                <p>Once a Player can't place a piece on the grid, they are eliminated; Repeat this until there is one WINNER left</p>
+            </span>
+        </div>
+         <div>
+            <button @click="changePlayerOne();
+                    randomImage();" style="background: lightblue">PlayerOne</button>
+            <button v-on:click="changePlayerTwo();
+                    randomImage();" style="background: lightcoral">PlayerTwo</button>
+            <button v-on:click="changePlayerThree();
+                    randomImage();" style="background: yellow">PlayerThree</button>
+            <button v-on:click="changePlayerFour();
+                    randomImage();" style="background: greenyellow">PlayerFour</button>
+         </div>
+            <div v-if="selectedImage"><img style="width:150px; height: 150px" :src="selectedImage" alt="">
+            <span v-if="PlayerOne == true" style="font-size: 30px">It's Player One's Turn</span>
+            <span v-if="PlayerTwo == true" style="font-size: 30px">It's Player Two's Turn</span>
+            <span v-if="PlayerThree == true" style="font-size: 30px">It's Player Three's Turn</span>
+            <span v-if="PlayerFour == true" style="font-size: 30px">It's Player Four's Turn</span>
+         </div>
+
+	</div>
+
+	
+	<script>
+	var app = new Vue({
+		el: '#app',
+		
+        props: ['square'],
+		data(){
+            return {
+                maingrid: "main-grid",
+                blokusgrid: "blokus-grid",
+                space: "space",
+                //style: {background: ""},
+                //PlayerTwoStyle: { background: "red" },
+                PlayerOne: true,
+                PlayerTwo: false,
+                PlayerThree: false,
+                PlayerFour: false,
+
+                grid:[],
+
+                images: [
+                    'images/Piece1.png', 'images/Piece2.png',
+                    'images/Piece3.png', 'images/Piece4.png',
+                    'images/Piece5.png', 'images/Piece6.png',
+                    'images/Piece7.png', 'images/Piece8.png',
+                    'images/Piece9.png', 'images/Piece10.png',
+                    'images/Piece11.png', 'images/Piece12.png',
+                    'images/Piece13.png', 'images/Piece14.png',
+                    'images/Piece15.png', 'images/Piece16.png',
+
+                ],
+                selectedImage: null
+            }                
+        },
+		methods:{
+            changePlayerOne : function(){
+                this.PlayerOne = true;
+                this.PlayerTwo = false;
+                this.PlayerThree = false;
+                this.PlayerFour = false;
+			},
+            changePlayerTwo : function(){
+                this.PlayerOne = false;
+                this.PlayerTwo = true;
+                this.PlayerThree = false;
+                this.PlayerFour = false;
+			},
+            changePlayerThree : function(){
+                this.PlayerOne = false;
+                this.PlayerTwo = false;
+                this.PlayerThree = true;
+                this.PlayerFour = false;
+			},
+            changePlayerFour : function(){
+                this.PlayerOne = false;
+                this.PlayerTwo = false;
+                this.PlayerThree = false;
+                this.PlayerFour = true;
+			},
+            onClick: function(index) {
+                this.grid[index].clicked = !this.grid[index].clicked;
+                //console.log(this.PlayerTwo);
+                if(this.PlayerOne){
+                    this.grid[index].color = "blue";
+                }else if(this.PlayerTwo){
+                    this.grid[index].color = "red";
+                }else if(this.PlayerThree){
+                    this.grid[index].color = "goldenrod";
+                }else if(this.PlayerFour){
+                    this.grid[index].color = "green";
+                }
+            },
+            randomItem (items) {
+                return items[Math.floor(Math.random()*items.length)];
+            },
+            randomImage() {
+                this.selectedImage = this.randomItem(this.images)
+            }
+		},
+        mounted() {
+            let squares = [];
+            for (let i = 0; i < 400; i++) {
+            let id = i;
+            squares.push({ text:"", clicked: true, id: id, color: null});
+            }
+            this.grid = squares;
+        },
+        created() {
+            this.selectedImage = this.randomItem(this.images)
+        }
+ });
+	</script>
+	</body>
+</html>
