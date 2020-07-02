@@ -3,13 +3,15 @@
 	<head>
 		<title>Vue Blokus (kinda)</title>
 		<meta charset="UTF-8">
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <!--Anything that's not commeneted was created using Vue documentation and Christine's Vue exercises as referance.-->
 		<style>
             .main-grid{
                 display: grid;
                 grid-template-columns: 600px auto;
                 column-gap: 20px;
             }
+            /* I used a grid generator to the basis for a grid and edited to meet my project https://grid.layoutit.com/ */
             .blokus-grid {
                 display: grid;
                 
@@ -81,7 +83,7 @@
                 PlayerFour: false,
 
                 grid:[],
-
+                //I used this link as referance to build a random image generator: https://renatello.com/random-image-vue-js/
                 images: [
                     'images/Piece1.png', 'images/Piece2.png',
                     'images/Piece3.png', 'images/Piece4.png',
@@ -141,6 +143,8 @@
                 this.selectedImage = this.randomItem(this.images)
             }
 		},
+        //I learned about mounting from a user on StackOverflow who helped me out when I had an issue with the grid changing colours.
+        //this is the post on stackoverflow https://stackoverflow.com/questions/62630627/how-can-i-change-the-colour-of-a-certain-div-in-vue-js
         mounted() {
             let squares = [];
             for (let i = 0; i < 400; i++) {
